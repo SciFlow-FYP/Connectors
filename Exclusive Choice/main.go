@@ -24,7 +24,7 @@ func pythonCall(progName string, sendChannel chan <- string) {
 	sendChannel <- msg
 }
 
-func multipleChoiceConnector(sendChannel <- chan string) (string, string){
+func exclusiveChoiceConnector(sendChannel <- chan string) (string, string){
 	msg := <- sendChannel
 	//msg1 := msg + " multi choice"
 	receiveChannel1 := make(chan string, 1)
@@ -73,7 +73,7 @@ func main(){
 	sendChannelModuleA := make(chan string, 1)
 	go pythonCall("moduleA.py", sendChannelModuleA)
 	
-	recChannelA1,recChannelA2 := multipleChoiceConnector(sendChannelModuleA)
+	recChannelA1,recChannelA2 := exclusiveChoiceConnector(sendChannelModuleA)
 
 	if recChannelA2 == "NULL"{
 		fmt.Println("test1", recChannelA1)
