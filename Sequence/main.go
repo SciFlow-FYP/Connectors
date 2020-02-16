@@ -42,11 +42,11 @@ func main(){
 	outA := <- receiveChannelModuleA
 	fmt.Println(outA)
 
-	sendChannelModuleB := make(chan string, 1)
+	receiveChannelModuleB := make(chan string, 1)
 	//modB := "moduleB.py atmmoB"
 	go pythonCall("moduleB.py", outA, receiveChannelModuleA)
-	go sequenceConnector(receiveChannelModuleA, sendChannelModuleB)
-	outB := <- sendChannelModuleB
+	go sequenceConnector(receiveChannelModuleA, receiveChannelModuleB)
+	outB := <- receiveChannelModuleB
 	fmt.Println(outB)
 
 /*
