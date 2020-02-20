@@ -24,7 +24,7 @@ func pythonCall(progName string, argument string, sendChannel chan <- string) {
 	sendChannel <- msg
 }
 
-func sequenceConnector(sendChannel <- chan string, receiveChannel chan <- string ){
+func messagePassing(sendChannel <- chan string, receiveChannel chan <- string ){
 	msg := <- sendChannel
 	msg1 := msg + " sequence"
 	receiveChannel <- msg1
@@ -33,30 +33,26 @@ func sequenceConnector(sendChannel <- chan string, receiveChannel chan <- string
 //in==send
 //out==recieve
 
-
-func main(){
+func sequenceConnector(program1 string, program2 string){
 	sendChannelModuleA := make(chan string, 1)
 	receiveChannelModuleA := make(chan string, 1)
-	go pythonCall("moduleA.py", "", sendChannelModuleA)
-	go sequenceConnector(sendChannelModuleA, receiveChannelModuleA)
+	go pythonCall(program1, "", sendChannelModuleA)
+	go messagePassing(sendChannelModuleA, receiveChannelModuleA)
 	outA := <- receiveChannelModuleA
 	fmt.Println(outA)
 
 	sendChannelModuleB := make(chan string, 1)
-	//modB := "moduleB.py atmmoB"
-	go pythonCall("moduleB.py", outA, receiveChannelModuleA)
-	go sequenceConnector(receiveChannelModuleA, sendChannelModuleB)
+	go pythonCall(program2, outA, receiveChannelModuleA)
+	go messagePassing(receiveChannelModuleA, sendChannelModuleB)
 	outB := <- sendChannelModuleB
 	fmt.Println(outB)
+}
 
-/*
 
-	receiveChannelModuleB := make(chan string, 1)
-	modB := "moduleB.py " + outA
-	go pythonCall(outA, receiveChannelModuleA)
-	go sequenceConnector(receiveChannelModuleA, receiveChannelModuleB)
-	fmt.Println(<- receiveChannelModuleB)
-*/
+func main(){
+
+	sequenceConnector("moduleA.py", "moduleB.py")
+
 }
 
 
