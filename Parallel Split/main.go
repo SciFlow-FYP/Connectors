@@ -24,7 +24,7 @@ func pythonCall(progName string, sendChannel chan <- string) {
 	sendChannel <- msg
 }
 
-func multipleChoiceConnector(sendChannel <- chan string) (string, string){
+func messagePassing(sendChannel <- chan string) (string, string){
 	msg := <- sendChannel
 	//msg1 := msg + " multi choice"
 	receiveChannel1 := make(chan string, 1)
@@ -54,46 +54,29 @@ func execModule(progName string){
 }
 
 
-func main(){
+func parallelSplitConnector(program1 string, program2 string, program3 string){
 	sendChannelModuleA := make(chan string, 1)
-	go pythonCall("moduleA.py", sendChannelModuleA)
+	go pythonCall(program1, sendChannelModuleA)
 	
-	recChannelA1,recChannelA2 := multipleChoiceConnector(sendChannelModuleA)
+	recChannelA1,recChannelA2 := messagePassing(sendChannelModuleA)
+
 	fmt.Println("test3", recChannelA1)
+	
 	sendChannelModuleBin := make(chan string, 1)
 	sendChannelModuleBin <- recChannelA1
-	execModule("moduleB.py")
+	execModule(program2)
+	
 	fmt.Println("test4", recChannelA2)
+
 	sendChannelModuleCin := make(chan string, 1)
 	sendChannelModuleCin <- recChannelA2
-	execModule("moduleC.py")
-		
+	execModule(program3)
+}
 
-	
-	
-/*
+func main(){
 
-	outA1 := <- receiveChannelModuleA1
-	outA2 := <- receiveChannelModuleA2
-	fmt.Println(outA1)
-	fmt.Println(outA2)
+	parallelSplitConnector("moduleA.py","moduleB.py","moduleC.py")
 
-
-	sendChannelModuleB := make(chan string, 1)
-	//modB := "moduleB.py atmmoB"
-	go pythonCall("moduleB.py", outA, receiveChannelModuleA)
-	go sequenceConnector(receiveChannelModuleA, sendChannelModuleB)
-	outB := <- sendChannelModuleB
-	fmt.Println(outB)
-
-
-
-	receiveChannelModuleB := make(chan string, 1)
-	modB := "moduleB.py " + outA
-	go pythonCall(outA, receiveChannelModuleA)
-	go sequenceConnector(receiveChannelModuleA, receiveChannelModuleB)
-	fmt.Println(<- receiveChannelModuleB)
-*/
 }
 
 
