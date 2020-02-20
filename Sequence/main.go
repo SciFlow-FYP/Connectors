@@ -41,10 +41,10 @@ func sequenceConnector(program1 string, program2 string){
 	outA := <- receiveChannelModuleA
 	fmt.Println(outA)
 
-	sendChannelModuleB := make(chan string, 1)
-	go pythonCall(program2, outA, receiveChannelModuleA)
-	go messagePassing(receiveChannelModuleA, sendChannelModuleB)
-	outB := <- sendChannelModuleB
+	receiveChannelModuleB := make(chan string, 1)
+	go pythonCall("moduleB.py", outA, receiveChannelModuleA)
+	go messagePassing(receiveChannelModuleA, receiveChannelModuleB)
+	outB := <- receiveChannelModuleB
 	fmt.Println(outB)
 }
 
